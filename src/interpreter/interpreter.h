@@ -54,11 +54,21 @@ public:
   bool hasMemoryLeak() const { return !malloced.empty(); }
 
   std::size_t getTimeConsumed() const {
+    constexpr std::size_t MemSizeFactor = 512;
     return instCnt.simple * instWeight.simple + instCnt.mul * instWeight.mul +
            instCnt.cache * instWeight.cache + instCnt.br * instWeight.br +
            instCnt.div * instWeight.div + instCnt.mem * instWeight.mem +
            instCnt.libcIO * instWeight.libcIO +
-           instCnt.libcMem * instWeight.libcMem;
+           instCnt.libcMem * instWeight.libcMem +
+           interpretable.getStorage().size() / MemSizeFactor;
+  }
+
+  std::size_t getInstLength() const {
+    return interpretable.getInsts().size();
+  }
+
+  std::size_t getGlobalMemorySize() const {
+    return interpretable.getStorage().size();
   }
 
   const InstCnt &getInstCnt() const { return instCnt; }

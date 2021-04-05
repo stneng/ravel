@@ -47,6 +47,8 @@ void Simulator::printResult(const Interpreter &interpreter) const {
   std::cout << std::endl;
   std::cout << "exit code: " << interpreter.getReturnCode() << std::endl;
   std::cout << "memory leak: " << interpreter.hasMemoryLeak() << std::endl;
+  std::cout << "instructions count: " << interpreter.getInstLength() << " line(s)" << std::endl;
+  std::cout << "global memory: " << interpreter.getGlobalMemorySize() << " Byte(s)" << std::endl;
   std::cout << "time: " << interpreter.getTimeConsumed() << std::endl;
   std::cout << "# instructions:\n";
   auto iCnt = interpreter.getInstCnt();
