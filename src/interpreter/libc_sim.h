@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <unordered_set>
+#include <unordered_map>
 #include <vector>
 
 // IO
@@ -32,12 +33,12 @@ namespace ravel::libc {
 
 void malloc(std::array<std::uint32_t, 32> &regs,
             const std::vector<std::byte> &storage, std::size_t &heapPtr,
-            std::unordered_set<std::size_t> &malloced,
+            std::unordered_map<std::size_t, std::size_t> &malloced,
             std::unordered_set<std::size_t> &invalidAddress,
             std::size_t &instCnt);
 
 void free(const std::array<std::uint32_t, 32> &regs,
-          std::unordered_set<std::size_t> &malloced);
+          std::unordered_map<std::size_t, std::size_t> &malloced);
 
 void memcpy(std::array<std::uint32_t, 32> &regs,
             std::vector<std::byte> &storage, std::size_t &instCnt);

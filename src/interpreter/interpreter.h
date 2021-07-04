@@ -52,6 +52,7 @@ public:
   std::uint32_t getReturnCode() const;
 
   bool hasMemoryLeak() const { return !malloced.empty(); }
+  std::size_t getMaxMalloced() const { return maxMalloced; }
 
   std::size_t getTimeConsumed() const {
     constexpr std::size_t MemSizeFactor = 512;
@@ -92,7 +93,8 @@ private:
   std::vector<std::byte> storage;
   Cache cache;
   std::size_t heapPtr = 0;
-  std::unordered_set<std::size_t> malloced;
+  std::unordered_map<std::size_t, std::size_t> malloced;
+  std::size_t maxMalloced = 0;
   std::unordered_set<std::size_t> invalidAddress;
 
   FILE *in;
