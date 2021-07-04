@@ -7,6 +7,7 @@
 #include <memory>
 #include <queue>
 #include <stack>
+#include <numeric>
 
 #include "assembler/parser.h"
 #include "error.h"
@@ -451,6 +452,7 @@ void Interpreter::simulateLibCFunc(libc::Func funcN) {
   } else
     assert(false);
 
+  std::size_t sum = 0;
   switch (funcN) {
   case libc::PUTS:
     libc::puts(regs, storage, out);
@@ -472,6 +474,8 @@ void Interpreter::simulateLibCFunc(libc::Func funcN) {
   case libc::MALLOC:
     libc::malloc(regs, storage, heapPtr, malloced, invalidAddress,
                  instCnt.libcMem);
+    for (auto p : malloced) sum += p.second;
+    maxMalloced = std::max(maxMalloced, sum);
     return;
   case libc::FREE:
     libc::free(regs, malloced);

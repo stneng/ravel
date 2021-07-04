@@ -192,13 +192,13 @@ constexpr std::size_t MemSizeFactor = 512;
 
 void malloc(std::array<std::uint32_t, 32> &regs,
             const std::vector<std::byte> &storage, std::size_t &heapPtr,
-            std::unordered_set<std::size_t> &malloced,
+            std::unordered_map<std::size_t, std::size_t> &malloced,
             std::unordered_set<std::size_t> &invalidAddress,
             std::size_t &instCnt) {
   auto size = (std::size_t)regs[10];
   instCnt += size / MemSizeFactor;
   regs[10] = heapPtr;
-  malloced.emplace(heapPtr);
+  malloced[heapPtr] = size;
   heapPtr += size;
   invalidAddress.emplace(heapPtr++);
   if (heapPtr % 2) {
@@ -210,7 +210,7 @@ void malloc(std::array<std::uint32_t, 32> &regs,
 }
 
 void free(const std::array<std::uint32_t, 32> &regs,
-          std::unordered_set<std::size_t> &malloced) {
+          std::unordered_map<std::size_t, std::size_t> &malloced) {
   std::size_t addr = regs[10];
   assert(isIn(malloced, addr));
   malloced.erase(malloced.find(addr));
