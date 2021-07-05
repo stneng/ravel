@@ -190,11 +190,11 @@ namespace {
 constexpr std::size_t MemSizeFactor = 512;
 } // namespace
 
-void malloc(std::array<std::uint32_t, 32> &regs,
-            const std::vector<std::byte> &storage, std::size_t &heapPtr,
-            std::unordered_map<std::size_t, std::size_t> &malloced,
-            std::unordered_set<std::size_t> &invalidAddress,
-            std::size_t &instCnt) {
+std::size_t malloc(std::array<std::uint32_t, 32> &regs,
+                   const std::vector<std::byte> &storage, std::size_t &heapPtr,
+                   std::unordered_map<std::size_t, std::size_t> &malloced,
+                   std::unordered_set<std::size_t> &invalidAddress,
+                   std::size_t &instCnt) {
   auto size = (std::size_t)regs[10];
   instCnt += size / MemSizeFactor;
   regs[10] = heapPtr;
@@ -207,13 +207,17 @@ void malloc(std::array<std::uint32_t, 32> &regs,
   if (heapPtr >= storage.size()) {
     throw RuntimeError("Running out of memory");
   }
+  return size;
 }
 
-void free(const std::array<std::uint32_t, 32> &regs,
-          std::unordered_map<std::size_t, std::size_t> &malloced) {
+std::size_t free(const std::array<std::uint32_t, 32> &regs,
+                 std::unordered_map<std::size_t, std::size_t> &malloced) {
   std::size_t addr = regs[10];
   assert(isIn(malloced, addr));
-  malloced.erase(malloced.find(addr));
+  auto t = malloced.find(addr);
+  std::size_t size = t->second;
+  malloced.erase(t);
+  return size;
 }
 
 void memcpy(std::array<std::uint32_t, 32> &regs,

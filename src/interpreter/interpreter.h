@@ -94,6 +94,7 @@ private:
   Cache cache;
   std::size_t heapPtr = 0;
   std::unordered_map<std::size_t, std::size_t> malloced;
+  std::size_t sum = 0;
   std::size_t maxMalloced = 0;
   std::unordered_set<std::size_t> invalidAddress;
 

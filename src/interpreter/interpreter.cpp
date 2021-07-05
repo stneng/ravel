@@ -452,7 +452,6 @@ void Interpreter::simulateLibCFunc(libc::Func funcN) {
   } else
     assert(false);
 
-  std::size_t sum = 0;
   switch (funcN) {
   case libc::PUTS:
     libc::puts(regs, storage, out);
@@ -472,13 +471,12 @@ void Interpreter::simulateLibCFunc(libc::Func funcN) {
     libc::putchar(regs, out);
     return;
   case libc::MALLOC:
-    libc::malloc(regs, storage, heapPtr, malloced, invalidAddress,
-                 instCnt.libcMem);
-    for (auto p : malloced) sum += p.second;
+    sum += libc::malloc(regs, storage, heapPtr, malloced, invalidAddress,
+                        instCnt.libcMem);
     maxMalloced = std::max(maxMalloced, sum);
     return;
   case libc::FREE:
-    libc::free(regs, malloced);
+    sum -= libc::free(regs, malloced);
     return;
   case libc::MEMCPY:
     libc::memcpy(regs, storage, instCnt.libcMem);
